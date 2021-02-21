@@ -1,24 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// Wesley Murray
+// 2/21/2021
+// Define chat app
+
+import React, {useState, useEffect } from "react";
+import * as signalR from "@microsoft/signalr";
+
+//Style
+import "./App.css";
+import MessageForm from "./Components/MessageForm";
+import MessageBoard from "./Components/MessageBoard";
+
+
+
+function form(){
+  return (
+    <form>
+      <label>
+        Username:
+        <input type="text" name="username" />
+      </label>
+      <label>
+        Message:
+        <input type="text" name="message" />
+      </label>
+      <input type="submit" value="Send" />
+    </form>
+  );
+}
 
 function App() {
+  const connection = new signalR.HubConnectionBuilder()
+      .withUrl("/hub")
+      .build();
+
+  connection.start().catch(err => document.write(err));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <MessageForm toServerConnection={connection} />
+      <MessageBoard toServerConnection={connection} />
     </div>
   );
 }

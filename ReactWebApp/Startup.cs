@@ -1,10 +1,14 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using ReactWebApp.Hubs;
 
 namespace ReactWebApp
 {
@@ -28,6 +32,8 @@ namespace ReactWebApp
             {
                 configuration.RootPath = "client/build";
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +71,11 @@ namespace ReactWebApp
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<ChatHub>("/hub");
             });
         }
     }
