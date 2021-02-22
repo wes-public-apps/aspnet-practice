@@ -29,7 +29,7 @@ class MessageBoard extends React.Component<IMessageBoardProps,IMessageBoardState
     constructor(props: IMessageBoardProps){
         super(props);
         this.state ={
-            messages: []
+            messages: [{username: "sample user",message:"sample message"}]
         }
         props.toServerConnection.on("messageReceived", (username: string, message: string) => {
             this.state.messages.push({username: username,message: message});

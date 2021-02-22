@@ -10,24 +10,6 @@ import "./App.css";
 import MessageForm from "./Components/MessageForm";
 import MessageBoard from "./Components/MessageBoard";
 
-
-
-function form(){
-  return (
-    <form>
-      <label>
-        Username:
-        <input type="text" name="username" />
-      </label>
-      <label>
-        Message:
-        <input type="text" name="message" />
-      </label>
-      <input type="submit" value="Send" />
-    </form>
-  );
-}
-
 function App() {
   const connection = new signalR.HubConnectionBuilder()
       .withUrl("/hub")

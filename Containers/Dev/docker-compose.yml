@@ -1,0 +1,10 @@
+services:
+  DevReactWebApp:
+    image: localhost:5000/aspnet-react-dev-container
+    container_name: devreactwebapp
+    ports: 
+      - "80:80"
+    working_dir: /app
+    volumes:
+      - ../../ReactWebApp:/app
+    command: sh -c "dotnet build && dotnet watch run"

@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+#install npm in build
+RUN apt update -yq && apt upgrade -yq && apt install -yq curl git nano
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt install -yq nodejs build-essential
+RUN npm install
+

@@ -24,10 +24,14 @@ class MessageForm extends React.Component<IMessageFormProps,IMessageFormState>{
     constructor(props: IMessageFormProps){
         super(props);
         this.state = {
-            username: '',
-            message: '',
+            username: "",
+            message: "",
             toServerConnection: props.toServerConnection
         }
+
+        //make sure form inputs update as you type
+        this.onUsernameChange = this.onUsernameChange.bind(this);
+        this.onMessageChange = this.onMessageChange.bind(this);
     }
 
     onUsernameChange(event: React.FormEvent<HTMLInputElement>): void {
@@ -48,11 +52,11 @@ class MessageForm extends React.Component<IMessageFormProps,IMessageFormState>{
             <form onSubmit={this.onSend}>
               <label>
                 Username:
-                <input type="text" name="username" value={this.state.username} onChange={this.onUsernameChange}/>
+                <input type="text" value={this.state.username} onChange={this.onUsernameChange}/>
               </label>
               <label>
                 Message:
-                <input type="text" name="message" value={this.state.message} onChange={this.onMessageChange}/>
+                <input type="text" value={this.state.message} onChange={this.onMessageChange}/>
               </label>
               <input type="submit" value="Send" />
             </form>
