@@ -4,14 +4,17 @@
 
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using System;
+using ReactWebApp.Hubs.Clients;
 
 namespace ReactWebApp.Hubs
 {
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatClient>
     {
-        public async Task NewMessage(long username, string message)
+        public async Task SendMessage(string username, string message)
         {
-            await Clients.All.SendAsync("messageReceived", username, message);
+            Console.WriteLine("Message Sent "+username+" "+message);
+            await Clients.All.RecieveMessage(username, message);
         }
     }
 }

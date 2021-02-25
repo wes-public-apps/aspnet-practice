@@ -1,18 +1,16 @@
 # Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
 
-version: '3.4'
-
 services:
-  reactwebapp:
-    image: reactwebapp
-    build:
-      context: .
-      dockerfile: ReactWebApp/Dockerfile
-    ports:
-      - 5000
-      - 5001
+  DevReactWebApp:
+    image: localhost:5000/aspnet-react-dev-container
+    container_name: devreactwebapp
+    ports: 
+      - "80:80"
+      - "5000-5001:5000-5001"
+    working_dir: /app
+    volumes:
+      - ../../ReactWebApp:/app
+      - ~/.vsdbg:/remote_debugger:rw
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
-    volumes:
-      - ~/.vsdbg:/remote_debugger:rw

@@ -26,6 +26,7 @@ namespace ReactWebApp
         {
 
             services.AddControllersWithViews();
+            services.AddSignalR();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -33,7 +34,6 @@ namespace ReactWebApp
                 configuration.RootPath = "client/build";
             });
 
-            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +61,7 @@ namespace ReactWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHub<ChatHub>("/hubs/chat");
             });
 
             app.UseSpa(spa =>
@@ -71,11 +72,6 @@ namespace ReactWebApp
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<ChatHub>("/hub");
             });
         }
     }
