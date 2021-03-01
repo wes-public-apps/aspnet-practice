@@ -1,6 +1,9 @@
 services:
   DevReactWebApp:
-    image: localhost:5000/aspnet-react-dev-container
+    image: aspnet-react-dev-container
+    build:
+      context: ../..
+      dockerfile: ./Containers/Dev/DockerFile
     container_name: devreactwebapp
     ports: 
       - "80:80"
