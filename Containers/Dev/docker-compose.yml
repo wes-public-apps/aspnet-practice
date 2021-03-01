@@ -18,3 +18,4 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=QkpkmwUqymKdZLutWZIj
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnet.pfx
+      - REACT_APP_AZURE_ACTIVE_DIRECTORY_APP_CLIENT_ID=ff65e701-1d19-4c00-9c2f-456e93f0eed3
