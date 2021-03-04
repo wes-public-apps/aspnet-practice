@@ -4,3 +4,6 @@
 
 #IDE Files
 .vscode/
+
+#Azure AD Authentication Files
+.env
