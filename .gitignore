@@ -4,3 +4,6 @@
 
 #IDE Files
 .vscode/
+
+#Environment Files
+.env
