@@ -7,5 +7,9 @@
 
 #SSL Information
 Certificates/aspnet-practice.crt
+Certificates/aspnet-practice.csr
+Certificates/aspnet-practice.ext
 Certificates/aspnet-practice.key
-Certificates/openssl.cert.cnf
+Certificates/myCA.key
+Certificates/myCA.pem
+Certificates/myCA.srl
