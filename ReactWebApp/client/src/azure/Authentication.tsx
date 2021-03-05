@@ -52,11 +52,16 @@ export class AuthenticationButton extends React.Component<IAuthenticationProps,I
             this.state.authenticationModule.logOut(this.state.user);
         }
     }
+
+    //Use JSX to create login/logout buttons when applicable.
+    render(){
+        return this.state.authenticated ? <button onClick={this.logOut} >Log Out</button> : <button onClick={this.logIn} >Log in</button>;
+    }
     //#endregion
 
     //#region Handlers
     //Updates component state based on Authentication results
-    onLoginHandler = (user: AccountInfo | undefined) => {
+    private onLoginHandler = (user: AccountInfo | undefined) => {
         this.setState({
             authenticated: (user?.name)?true:false, 
             user: user
@@ -64,9 +69,4 @@ export class AuthenticationButton extends React.Component<IAuthenticationProps,I
         this.props.onAuthenticatedHandler(user);
     }
     //#endregion
-
-    //Use JSX to create login/logout buttons when applicable.
-    render(){
-        return this.state.authenticated ? <button onClick={this.logOut} >Log Out</button> : <button onClick={this.logIn} >Log in</button>;
-    }
 }
