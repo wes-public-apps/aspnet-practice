@@ -4,6 +4,7 @@ import React from 'react';
 import { AuthenticationButton } from './azure/Authentication';
 import Chat from './Chat';
 
+//#region Type Definitions
 interface IAppProps{
 
 }
@@ -11,6 +12,7 @@ interface IAppProps{
 interface IAppState{
   currentUser: AccountInfo | undefined;
 }
+//#endregion
 
 class App extends React.Component<IAppProps,IAppState> {
   state: IAppState;
@@ -24,6 +26,7 @@ class App extends React.Component<IAppProps,IAppState> {
   }
 
   //#region Handlers
+  //Update app state with results of authentication.
   onAuthenticatedHandler = async (user: AccountInfo) => {
     this.setState({currentUser: user});
   }

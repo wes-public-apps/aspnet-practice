@@ -4,14 +4,16 @@
 
 import {AccountInfo, AuthenticationResult, Configuration,EndSessionRequest,LogLevel, PublicClientApplication, RedirectRequest} from "@azure/msal-browser";
 
+//#region Type Declarations
 //Define complex types used in Authentication Module
 export type AccountInfoHandler = (account: AccountInfo | undefined) => void;
+//#endregion
 
 export class AuthenticationModule{
 
     //#region Static Variables
-    static context: AuthenticationModule;
-    static MSAL_CONFIG: Configuration = {
+    private static context: AuthenticationModule; //singleton pattern
+    private static MSAL_CONFIG: Configuration = {
         auth: {
           clientId: process.env.REACT_APP_AZURE_AD_CLIENTID ? process.env.REACT_APP_AZURE_AD_CLIENTID : "",
         },
@@ -47,7 +49,6 @@ export class AuthenticationModule{
 
     //#region Instance Variables
     private MSAL: PublicClientApplication;
-    private account?: AccountInfo;
     isAuthenticationConfigured = false;
     //#endregion
 
@@ -72,10 +73,11 @@ export class AuthenticationModule{
 
     //#region Public Instance Methods
     /**
-     * Creates a popup to have user log in.
-     * @param setUser handler to perform actions on retrieved account info
+     * Creates a popup to have user log in. 
+     * This method does not support redirect login because it is unnecessary for modern browsers. 
+     * @param parentOnLoginHandler handler to perform actions on retrieved account info
      */
-    logIn(setUser: AccountInfoHandler){
+    logIn(parentOnLoginHandler: AccountInfoHandler){
         const loginRedirectRequest = {
             scopes: [],
             prompt: "select_account",
@@ -83,7 +85,7 @@ export class AuthenticationModule{
 
         this.MSAL.loginPopup(loginRedirectRequest)
             .then((res: AuthenticationResult) =>{
-                this.onLoginHandler(res,setUser);
+                this.onLoginHandler(res,parentOnLoginHandler);
             })
             .catch((err) => {
                 console.error(err);
@@ -91,30 +93,32 @@ export class AuthenticationModule{
     }
 
     /**
-     * Log user out of app.
+     * Log current user out.
+     * @param user current user's account info
      */
-    logOut(account: AccountInfo){
+    logOut(user: AccountInfo){
         const logOutRequest: EndSessionRequest={
-            account,
+            account: user,
         };
 
         this.MSAL.logout(logOutRequest);
     }
-
-    //#region Handlers
-    /**
-     * This method handles responding to the authentication redirect after the user signs in.
-     * @param response contains result of authentication request
-     * @param onAccountInfoRetrievedHandler handler to process retrieved account information
-     */
-    onLoginHandler = (response: AuthenticationResult,onAccountInfoRetrievedHandler: AccountInfoHandler) => {
-        this.account = (response?.account !== null) ? response.account : this.getAccount();
-        if(this.account) onAccountInfoRetrievedHandler(this.account);
-    }
-    //#endregion
     //#endregion
 
     //#region Private Instance Methods
+
+    //#region Handlers
+    /**
+     * This method handles response data after login.
+     * @param response contains result of authentication request
+     * @param onAccountInfoRetrievedHandler handler to process retrieved account information
+     */
+    private onLoginHandler = (response: AuthenticationResult,onAccountInfoRetrievedHandler: AccountInfoHandler) => {
+      const account = (response?.account !== null) ? response.account : this.getAccount();
+      if(account) onAccountInfoRetrievedHandler(account);
+    }
+    //#endregion
+
     /**
      * @returns AccountInfo object of authenticated user or undefined if object cannot be found.
      */
