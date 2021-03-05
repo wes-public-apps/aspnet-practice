@@ -2,7 +2,7 @@
 // 3/5/2021
 // This file servers as a helper for handling authetication through Azure AD
 
-import {AccountInfo, AuthenticationResult, Configuration,EndSessionRequest,LogLevel, PublicClientApplication, RedirectRequest} from "@azure/msal-browser";
+import {AccountInfo, AuthenticationResult, Configuration,EndSessionRequest,LogLevel, PublicClientApplication} from "@azure/msal-browser";
 
 //#region Type Declarations
 //Define complex types used in Authentication Module
@@ -57,7 +57,7 @@ export class AuthenticationModule{
     private constructor(){
         this.MSAL = new PublicClientApplication(AuthenticationModule.MSAL_CONFIG);
 
-        if(AuthenticationModule.MSAL_CONFIG.auth.clientId!="") this.isAuthenticationConfigured=true;
+        if(AuthenticationModule.MSAL_CONFIG.auth.clientId!=="") this.isAuthenticationConfigured=true;
     }
     //#endregion
 

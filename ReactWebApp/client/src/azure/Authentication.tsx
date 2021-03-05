@@ -4,7 +4,7 @@
 
 import React from "react";
 import {AccountInfo} from "@azure/msal-browser";
-import { AccountInfoHandler, AuthenticationModule } from "./AuthenticationModule";
+import { AuthenticationModule } from "./AuthenticationModule";
 
 //#region Type Definitions
 

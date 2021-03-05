@@ -27,7 +27,7 @@ class App extends React.Component<IAppProps,IAppState> {
 
   //#region Handlers
   //Update app state with results of authentication.
-  onAuthenticatedHandler = async (user: AccountInfo) => {
+  private onAuthenticatedHandler = async (user: AccountInfo) => {
     this.setState({currentUser: user});
   }
   //#endregion
