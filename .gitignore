@@ -4,3 +4,8 @@
 
 #IDE Files
 .vscode/
+
+#SSL Information
+Certificates/aspnet-practice.crt
+Certificates/aspnet-practice.key
+Certificates/openssl.cert.cnf
