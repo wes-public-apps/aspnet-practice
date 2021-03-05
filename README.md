@@ -49,11 +49,7 @@ In the future no build will be necessary at all. The image will be hosted on a g
 
 **Make App Secure**
 For development purposes this app will just use a self-signed certificate. You can do the following to get everything set up.
-* generate a SSL Certificate using dotnet. use absolute paths. 
-* dotnet dev-certs https --clean
-* dotnet dev-certs https --trust -ep <path to certificate>/<cert name>.pfx -p password
-* dotnet user-secrets -p <project name>.csproj set "Kestrel:Certificates:Development:Password" "password" ??????
-* update docker-compose file to mount ssl certificate and populate necessary environment variables. See Containers/Dev/docker-compose.yml for an example.
+* use openssl to generate a certificate and key in the certificates folder. add both to gitignore file. see https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide#with-openssl
 
 # Mistakes to Look Out For
 * hosting the React frontend and ASP.NET backend in separate containers. this worked out really well for me until I tried to make it secure. You have to add a CORs policy to the backend which is not bad at all, but then if you want use SSL CORs fails to allow specified origins and I have not been able to determine why. On top of security issues, it is bother some to effectively network the containers together so that signalr can work. When the frontend and backend are in the same container, the cross origin requests dont occur and signalr can magically just work.
