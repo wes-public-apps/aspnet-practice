@@ -5,8 +5,10 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import { IMessage } from './Message';
+import { AccountInfo } from '@azure/msal-common';
 
 interface IChatProps {
+    user: AccountInfo | undefined
 }
 
 interface IChatState {
@@ -22,7 +24,6 @@ class Chat extends React.Component<IChatProps,IChatState>{
 
         let newConnection: HubConnection | null = null;
         try {
-            console.log("Building Connection");
             newConnection = new HubConnectionBuilder()
                 .withUrl('/hubs/chat')
                 .withAutomaticReconnect()
@@ -33,22 +34,18 @@ class Chat extends React.Component<IChatProps,IChatState>{
         }
         this.state = {
             connection: newConnection,
-            chat: [{User: "user",Message: "message"}]
+            chat: []
         }
     
         if(this.state.connection===null) return;
 
         this.state.connection.start()
         .then(result => {
-            console.log('Connected!');
-
-            this.state.connection!.on('RecieveMessage',(user: string, message: string) => {
-                console.log("Recieved Message");
-                this.setState(state => {
-                    console.log(user+" "+message);              
+            this.state.connection!.on('RecieveMessage',(username: string, message: string) => {
+                this.setState(state => {            
                     return {
                       connection: state.connection,
-                      chat: [...state.chat, {User:user,Message:message}]
+                      chat: [...state.chat, {User:username,Message:message}]
                     };
                 });
                 console.log(this.state);
@@ -61,12 +58,10 @@ class Chat extends React.Component<IChatProps,IChatState>{
         
     }
 
-    async sendMessage(user: string, message: string){
+    async sendMessage(message: string){
         try {
-            console.log("Sending message! "+user+" "+message);
             if (this.state.connection!.state===HubConnectionState.Connected){
-                console.log("Message Sent");
-                await this.state.connection!.send('SendMessage', user, message);
+                await this.state.connection!.send('SendMessage', this.props.user?.name ? this.props.user.name : "NO_NAME", message);
             }else{
                 console.log("Disconnected");
             }
