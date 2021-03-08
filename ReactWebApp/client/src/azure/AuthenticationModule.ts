@@ -56,7 +56,6 @@ export class AuthenticationModule{
     //make private for singleton pattern
     private constructor(){
         this.MSAL = new PublicClientApplication(AuthenticationModule.MSAL_CONFIG);
-
         if(AuthenticationModule.MSAL_CONFIG.auth.clientId!=="") this.isAuthenticationConfigured=true;
     }
     //#endregion
@@ -85,7 +84,8 @@ export class AuthenticationModule{
 
         this.MSAL.loginPopup(loginRedirectRequest)
             .then((res: AuthenticationResult) =>{
-                this.onLoginHandler(res,parentOnLoginHandler);
+              const account = (res?.account !== null) ? res.account : this.getAccount();
+              if(account) parentOnLoginHandler(account);
             })
             .catch((err) => {
                 console.error(err);
@@ -106,19 +106,6 @@ export class AuthenticationModule{
     //#endregion
 
     //#region Private Instance Methods
-
-    //#region Handlers
-    /**
-     * This method handles response data after login.
-     * @param response contains result of authentication request
-     * @param onAccountInfoRetrievedHandler handler to process retrieved account information
-     */
-    private onLoginHandler = (response: AuthenticationResult,onAccountInfoRetrievedHandler: AccountInfoHandler) => {
-      const account = (response?.account !== null) ? response.account : this.getAccount();
-      if(account) onAccountInfoRetrievedHandler(account);
-    }
-    //#endregion
-
     /**
      * @returns AccountInfo object of authenticated user or undefined if object cannot be found.
      */

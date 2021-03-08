@@ -13,7 +13,6 @@ namespace ReactWebApp.Hubs
     {
         public async Task SendMessage(string username, string message)
         {
-            Console.WriteLine("Message Sent "+username+" "+message);
             await Clients.All.RecieveMessage(username, message);
         }
     }
