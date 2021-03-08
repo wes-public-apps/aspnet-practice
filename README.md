@@ -1,7 +1,7 @@
 # aspnet-practice
 The goal of this project is to create the architecture for a real-time web app that uses ASP.NET for the backend, React on Typescript for the frontend, SignalR to communicate between these layers, and finally docker to host the app. 
 
-This has been one of the hardest projects I have worked on in a while. I have never worked with any of these components before this project and I do not know any else that has. So I made many, many mistakes along the way that often resulted in undocumented errors. I will do by best to back fill as much information as I can in this readme file. Now that I have come out on the other side I am glad I struggled through it.
+This has been one of the hardest projects I have worked on in a while. I have never worked with any of these components before this project and I do not know anyone else that has. So I made many, many mistakes along the way that often resulted in undocumented errors. I will do by best to back fill as much information as I can in this readme file.
 
 # Run 
 **Prod**
@@ -9,7 +9,7 @@ This has been one of the hardest projects I have worked on in a while. I have ne
 * install docker and docker-compose
 * open repo in terminal
 * cd Containers/Prod
-* docker-compose up -d
+* docker-compose up -d --build
 * open localhost in a browser (continue on passed security warning generated since my cert is self signed)
 STOP with: docker-compose down 
 
@@ -19,7 +19,7 @@ STOP with: docker-compose down
 * open repo in terminal
 * docker 
 * cd Containers/Dev
-* docker-compose up -d
+* docker-compose up -d --build
 * open localhost in a browser (continue on passed security warning generated since my cert is self signed)
 STOP with: docker-compose down 
 
@@ -45,7 +45,6 @@ There are two containers: one for production and one for development. The produc
 
 Using Development Container: 
 * in Containers/Dev/ run "sudo docker-compose up -d --build"
-In the future no build will be necessary at all. The image will be hosted on a global registry. 
 
 **Make App Secure**
 For development purposes this app will just use a self-signed certificate. You can do the following to get everything set up.
@@ -55,5 +54,8 @@ For development purposes this app will just use a self-signed certificate. You c
 * in chrome add myCA.pem to the authorities section on managed certificates.
 
 # Mistakes to Look Out For
-* hosting the React frontend and ASP.NET backend in separate containers. this worked out really well for me until I tried to make it secure. You have to add a CORs policy to the backend which is not bad at all, but then if you want use SSL CORs fails to allow specified origins and I have not been able to determine why. On top of security issues, it is bother some to effectively network the containers together so that signalr can work. When the frontend and backend are in the same container, the cross origin requests dont occur and signalr can magically just work.
+* hosting the React frontend and ASP.NET backend in separate containers. this worked out really well for me until I tried to make it secure. You have to add a CORs policy to the backend which is not bad at all, but then if you want use SSL CORs fails to allow specified origins and I have not been able to determine why. On top of security issues, it is bother some to effectively network the containers together so that signalr can work. When the frontend and backend are in the same container, the cross origin requests dont occur and signalr can magically just work. This likely is a result of poor SSL setup. This configuration should still be considered.
 * use absolute urls when mounting the ssl certificate to the docker container using volumes. I tried to use ~ and ${HOME} shortcuts and the container crashed every time with a very obscure error. Effectively the ssl certificate could not be found.
+* do not use dotnet to generate your self-signed ssl. chrome will never accept it. you must use openssl to generate a certificate to be a certificate authority and generate another app certificate using the certificate authority certificate as a parent. Only when you add the certificate authority to managed certificates in chrome will your local host app be trusted.
+* this application should not be build with an ASP.NET core backend, but rather a serverless architecture. Web apps are stateless meaning the ASP.NET core backend is also stateless. This is great for building horizontally scalable applications using tools like docker, which was my intent, but serverless takes scalable to another level. 
+
