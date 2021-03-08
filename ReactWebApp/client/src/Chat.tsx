@@ -1,3 +1,6 @@
+// Wesley Murray
+// 3/5/2021
+// This component handles the chat app functionality.
 
 import React from 'react';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
@@ -5,14 +8,18 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
 import ChatWindow from './ChatWindow';
 import ChatInput from './ChatInput';
 import { IMessage } from './Message';
+import { AccountInfo } from '@azure/msal-common';
 
+//#region Type Definitions
 interface IChatProps {
+    user: AccountInfo | undefined
 }
 
 interface IChatState {
     connection: HubConnection | null;
-    chat: IMessage[];
+    messages: IMessage[];
 }
+//#endregion
 
 class Chat extends React.Component<IChatProps,IChatState>{
     state: IChatState;
@@ -20,6 +27,7 @@ class Chat extends React.Component<IChatProps,IChatState>{
     constructor(props: IChatProps){
         super(props);
 
+        //Connect to ASP.NET Hub for real-time communication
         let newConnection: HubConnection | null = null;
         try {
             console.log("Building Connection");
@@ -31,24 +39,22 @@ class Chat extends React.Component<IChatProps,IChatState>{
         }catch(e){
             console.log(e);
         }
+
+        //Initialize state
         this.state = {
             connection: newConnection,
-            chat: [{User: "user",Message: "message"}]
+            messages: [{User: "user",Message: "message"}]
         }
     
         if(this.state.connection===null) return;
 
         this.state.connection.start()
         .then(result => {
-            console.log('Connected!');
-
             this.state.connection!.on('RecieveMessage',(user: string, message: string) => {
-                console.log("Recieved Message");
-                this.setState(state => {
-                    console.log(user+" "+message);              
+                this.setState(state => {         
                     return {
                       connection: state.connection,
-                      chat: [...state.chat, {User:user,Message:message}]
+                      messages: [...state.messages, {User:user,Message:message}]
                     };
                 });
                 console.log(this.state);
@@ -57,16 +63,21 @@ class Chat extends React.Component<IChatProps,IChatState>{
         })
         .catch(e => console.log("Failed to Connect."))
 
+        //Bind handler context to handlers
         this.sendMessage = this.sendMessage.bind(this);
         
     }
 
-    async sendMessage(user: string, message: string){
+    //#region Public Methods
+    /**
+     * Calls ASP.NET Core Hub method "SendMessage".
+     * @param message message to send to recipients
+     */
+    async sendMessage(message: string){
         try {
-            console.log("Sending message! "+user+" "+message);
             if (this.state.connection!.state===HubConnectionState.Connected){
                 console.log("Message Sent");
-                await this.state.connection!.send('SendMessage', user, message);
+                await this.state.connection!.send('SendMessage', this.props.user?.name ? this.props.user.name : "NO_NAME", message);
             }else{
                 console.log("Disconnected");
             }
@@ -82,10 +93,11 @@ class Chat extends React.Component<IChatProps,IChatState>{
             <div>
                 <ChatInput sendMessage={this.sendMessage} />
                 <hr />
-                <ChatWindow chat={this.state.chat}/>
+                <ChatWindow messages={this.state.messages}/>
             </div>
         );
     }
+    //#endregion
 }
 
 export default Chat;

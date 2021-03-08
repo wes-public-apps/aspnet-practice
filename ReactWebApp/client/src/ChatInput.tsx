@@ -1,13 +1,18 @@
+// Wesley Murray
+// 3/5/2021
+// This react component handles the form for entering a message to send.
+
 import React from 'react';
 
+//#region Type Definitions
 interface IChatInputProps{
-    sendMessage(user: string,message: string): void;
+    sendMessage(message: string): void;
 }
 
 interface IChatInputState{
-    user: string;
     message: string;
 }
+//#endregion
 
 class ChatInput extends React.Component<IChatInputProps,IChatInputState>{
     state: IChatInputState;
@@ -15,49 +20,50 @@ class ChatInput extends React.Component<IChatInputProps,IChatInputState>{
     constructor(props: IChatInputProps){
         super(props);
         this.state = {
-            user: "",
             message: ""
         }
-        this.onUserUpdate = this.onUserUpdate.bind(this);
+
+        //Bind handler context to handlers
         this.onMessageUpdate = this.onMessageUpdate.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    //#region Public Methods
+    /**
+     * Handle form submission.
+     * @param e 
+     */
     onSubmit(e: React.FormEvent<HTMLFormElement>){
-        const isUserProvided = this.state.user && this.state.user !== '';
         const isMessageProvided = this.state.message && this.state.message !== '';
 
-        if (isUserProvided && isMessageProvided) {
-            this.props.sendMessage(this.state.user, this.state.message);
+        if (isMessageProvided) {
+            this.props.sendMessage(this.state.message);
         } 
         else {
-            alert('Please insert an user and a message.');
+            alert('Please insert a message.');
         }
 
-        this.setState({user: "",message: ""});
+        this.setState({message: ""});
 
         e.preventDefault();
     }
 
-    onUserUpdate(e: React.FormEvent<HTMLInputElement>){
-        this.setState({user: e.currentTarget.value});
-    }
+    /**
+     * Handle changes to the message form.
+     * @param e change event for input
+     */
     onMessageUpdate(e: React.FormEvent<HTMLInputElement>){
         this.setState({message: e.currentTarget.value});
     }
 
+    /**
+     * Defines input form for chat.
+     * @returns form to enter a message
+     */
     render(){
         return (
             <form 
                 onSubmit={this.onSubmit}>
-                <label htmlFor="user">User:</label>
-                <br />
-                <input 
-                    id="user" 
-                    name="user" 
-                    value={this.state.user}
-                    onChange={this.onUserUpdate} />
-                <br/>
                 <label htmlFor="message">Message:</label>
                 <br />
                 <input 
@@ -71,6 +77,7 @@ class ChatInput extends React.Component<IChatInputProps,IChatInputState>{
             </form>
         )
     }
+    //#endregion
 
 }
 

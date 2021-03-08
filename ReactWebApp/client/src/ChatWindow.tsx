@@ -3,7 +3,7 @@ import React from 'react';
 import Message, { IMessage } from './Message';
 
 interface IChatWindowProps {
-    chat: IMessage[];
+    messages: IMessage[];
 }
 
 interface IChatWindowState{
@@ -15,7 +15,7 @@ class ChatWindow extends React.Component<IChatWindowProps,IChatWindowState>{
         return(
             <div>
                 {
-                    this.props.chat.map((m: IMessage) => <Message 
+                    this.props.messages.map((m: IMessage) => <Message 
                         key={Date.now() * Math.random()}
                         User={m.User}
                         Message={m.Message}/>)
